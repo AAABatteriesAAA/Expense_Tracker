@@ -1,13 +1,11 @@
 
-class Expenses:
+class Expense:
     def __init__(self, date, amount, description):
         "Initializes each expense."
         "Precondition: "
         "date is a MM/DD/YYYY format"
         "amount is an int or float amount"
 
-        assert len(date)==6 and type(date)==int
-        assert amount>0 and type(amount)!= float
         self.date=date
         self.amount=amount
         self.description=description
@@ -21,24 +19,20 @@ class Tracker:
 
     def remove_expense(self,index):
         if 0<=index<len(self.expenses):
-            self.expenses.remove(expense)
+            self.expenses.remove(self.expenses[index-1])
             print("Successfully removed expense! :)")
         print("The expense does not exist. Please try again.")
 
     def view_expenses(self):
         if len(self.expenses)==0:
             print("Unfortunately, there is no expenses to show. Please add"
-            "an expense before being able to see it.")
+            " an expense before being able to see it.")
         else:
             print("Expense List:")
-            for x in self.expenses:
-                print(f"{x}. Date: {x.date}, Amount: {x.amount},"
-                f"Description: {x.description} ")
-
+            for idx, expense in enumerate(self.expenses, 1):
+                print(f"{idx}. Date: {expense.date}, Amount: {expense.amount}, Description: {expense.description}")
     def total_expenses(self):
-        total=0
-        for x in self.expenses:
-            total+=x.amount
+        total= sum(expense.amount for expense in self.expenses)
         print(f"Total Expenses: ${total:.2f}")
 
 class UserView():
@@ -56,23 +50,20 @@ class UserView():
 
         if selection=="1":
             date= input("Enter the date (MM/DD/YYYY): ")
-            amount= input("Enter the amount: ")
+            amount= float(input("Enter the amount: "))
             description= input("Enter the description: ")
-            expense= Expenses(date, amount, description)
+            expense= Expense(date, amount, description)
             tracker.add_expense(expense)
-            print("expense added successfully!!")
+            print("Expense added successfully!!")
         elif selection=="2":
             indexing= int(input("Please select index: "))-1
-            if indexing<0:
-                tracker.remove_expense(indexing)
-                print("expense removed successfully :(")
-            else:
-                print("The index does not exist. Please try again...")
+            tracker.remove_expense(indexing)
         elif selection=="3":
             tracker.view_expenses()
         elif selection=="4":
             tracker.total_expenses()
         elif selection=="5":
             print("Have a nice day!! :)")
+            break
         else:
             print("Please try again >:(")
